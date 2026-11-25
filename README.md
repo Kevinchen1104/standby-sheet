@@ -16,6 +16,8 @@ The Firebase JavaScript SDK runs in the browser. In device.js, getGenerativeMode
 
 ## Build
 
+For the competition's fourth-generation Chrome model, open chrome://flags/#gemma4-for-built-in-ai in a compatible desktop Chrome build, select Enabled, and relaunch. Chrome manages model availability and downloads. The first use needs a connection. Run once, disconnect, reload the page, and run again to verify the local path. An unsupported device can use the reviewed cloud path directly.
+
 Use Node 22 or newer. Run npm ci, npm test, then npm run build. Serve dist/ over HTTPS or localhost. To reproduce the integration with your own project, set FIREBASE_WEB_CONFIG to the JSON Firebase web registration and RECAPTCHA_SITE_ID to the public App Check site identifier for your domain. Enable the Gemini Developer API in Firebase AI Logic and register your domain with App Check. The demo uses the Spark free tier. The Pages workflow injects the demo’s public client registration during its build. Keep any private service credentials outside the client.
 
 ## Credits
