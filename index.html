@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#172838">
-<title>Standby Sheet · Shift handoff</title><link rel="stylesheet" href="./style.css"></head>
+<title>Standby Sheet | Shift handoff</title><link rel="stylesheet" href="./style.css"></head>
 <body><header><div class="brand"><span class="paper-mark" aria-hidden="true"></span>Standby Sheet</div><span class="workspace">Local workspace</span></header>
 <main>
   <section class="intro"><h1>Shift handoff</h1><p>Turn booth notes into a cue sheet your next operator can check.</p></section>
@@ -10,15 +10,15 @@
       <div class="actions"><button id="device" class="primary">Process on device</button><button id="review">Review for cloud</button></div></div>
     </section>
     <section class="panel" id="sheet"><div class="panel-head"><h2>Handoff sheet</h2><button id="print"><span aria-hidden="true">⎙ </span>Print</button></div>
-      <div class="inside"><ol id="rows" aria-label="Handoff cues"></ol><p id="provenance" aria-live="polite"></p></div>
+      <div class="inside"><ol id="rows" aria-label="Handoff cues"></ol><button id="unresolved" class="link" hidden>Review unresolved cues for cloud</button><p id="provenance" aria-live="polite"></p></div>
     </section>
   </div>
   <footer><strong>Status</strong><span id="network"></span><span id="status" role="status"></span></footer>
   <dialog id="cloud-review"><form method="dialog"><button class="dismiss" aria-label="Close cloud review">×</button></form>
-    <h2>Review for cloud</h2><p>Only the lines below will go to Google. Private lines, email addresses, links and phone numbers are filtered. Remove names and anything else the cloud should not receive. Google may use free-tier requests to improve its services.</p>
+    <h2>Review for cloud</h2><p>Only the lines below will go to Google. Start a booth note with “Private:” or “[private]” to exclude it. Common email addresses, links and phone numbers are masked. Remove names and anything else the cloud should not receive. Google may use free-tier requests to improve its services.</p>
     <div id="review-lines"></div><p id="removed"></p>
     <div class="actions"><button id="cancel">Keep local</button><button id="send" class="primary">Send reviewed lines</button></div>
   </dialog>
-  <dialog id="evidence"><form method="dialog"><button class="dismiss" aria-label="Close source line">×</button></form><h2 id="evidence-title">Source line</h2><p id="evidence-text"></p><p id="evidence-context"></p></dialog>
+  <dialog id="evidence"><form method="dialog"><button class="dismiss" aria-label="Close source line">×</button></form><h2 id="evidence-title">Source line</h2><p id="evidence-text"></p><p id="evidence-context"></p><p id="evidence-shared" hidden></p></dialog>
   <iframe id="local-worker" title="Isolated on-device processor" hidden></iframe>
 </main><script type="module" src="./app.js"></script></body></html>

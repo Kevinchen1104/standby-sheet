@@ -15,8 +15,19 @@ export function sourceLines(text) {
 
 // Removes whole private lines first; the operator still reviews names and venue-specific details.
 export function cloudDraft(text) {
-  return sourceLines(text).map(({n,text}) => {
-    if (/^(?:\[private\]|private\s*:)/i.test(text)) return null;
+  return shareableLines(sourceLines(text));
+}
+
+export function unresolvedCloudDraft(sheet) {
+  const pending=sheet.filter(row => row.route === 'device' && row.department === 'Review' && !isPrivate(row.text));
+  return shareableLines(pending.map(row=>({n:row.n,text:row.sharedText??row.text})));
+}
+
+export function isPrivate(text) { return /^(?:\[private\]|private\s*:)/i.test(text.trim()); }
+
+function shareableLines(lines) {
+  return lines.map(({n,text}) => {
+    if (isPrivate(text)) return null;
     const clean = text.replace(/https?:\/\/[^\s]+/gi,'[link]')
       .replace(/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/gi,'[email]')
       .replace(/(?:\+?\d[\d ().-]{7,}\d)/g,'[phone]');
@@ -32,7 +43,7 @@ export function promptFor(lines) {
     'Example output: {"rows":[{"n":1,"department":"Audio"}]}\nSOURCE LINES\n' + JSON.stringify(lines);
 }
 
-export function bindRows(response, lines) {
+export function bindRows(response, lines, route = 'example') {
   const clean = response.trim().replace(/^\x60{3}(?:json)?\s*/i,'').replace(/\s*\x60{3}$/,'');
   let parsed;
   try { parsed = JSON.parse(clean); }
@@ -47,7 +58,18 @@ export function bindRows(response, lines) {
   }
   return lines.map(({n,text}) => {
     const prefix = text.match(/^(Q\s*\d+[a-z]?|LX\s*\d+|SFX\s*\d+|Audio|Props|Deck|FOH|Lighting)\s*:\s*(.+)$/i);
-    return {n, text, label:prefix ? prefix[1].toUpperCase() : 'L'+n,
+    return {n, text, route, label:prefix ? prefix[1].toUpperCase() : 'L'+n,
       body:prefix ? prefix[2] : text, department:approved.get(n) || 'Review'};
+  });
+}
+
+// Only replace rows the operator explicitly sent. Keep the rest of the device sheet in order.
+export function mergeReviewedRows(sheet, cloudRows) {
+  const updates = new Map(cloudRows.map(row => [row.n, row]));
+  return sheet.map(row => {
+    const fresh=updates.get(row.n);
+    if (row.route!=='device' || row.department!=='Review' || !fresh) return row;
+    const resolved=fresh.department!=='Review';
+    return {...row, department:fresh.department, route:resolved?'cloud':'device', sharedText:fresh.text};
   });
 }
